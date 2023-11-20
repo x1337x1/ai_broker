@@ -1,0 +1,11 @@
+Vi venv
+/venv
+.idea
+.env
+__pycache__
+/bin
+/include
+/lib
+.vscode/
+env/
+/ai

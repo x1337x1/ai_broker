@@ -1,0 +1,9 @@
+openai
+pymongo
+langchain
+python-dotenv
+flask
+flask_cors
+kafka-python
+bs4
+pinecone-client
