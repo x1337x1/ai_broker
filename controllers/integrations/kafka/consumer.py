@@ -3,7 +3,9 @@ from dotenv import load_dotenv
 from confluent_kafka import Consumer
 from constants.kafka_topics import TOPIC_REPLY_QUERY, TOPIC_SEND_QUERY
 import asyncio
-
+import json
+from controllers.open_ai_controller.open_ai_controller import OPENAI
+open_ai_instance = OPENAI()
 
 load_dotenv()
 
@@ -36,18 +38,22 @@ class kafka_consumer:
 
 
 
-    def process_queries(self, consumer):
+    async def process_queries(self, consumer):
       try:
         while True:
-            message = consumer.poll(1.0)
-            if message is None:
+            queues = consumer.poll(1.0)
+            if queues is None:
                 continue
-            if message.error():
-               print("Consumer error: {}".format(message.error()))
+            if queues.error():
+               print("Consumer error: {}".format(queues.error()))
                continue
 
+            topic = queues.topic()
+            messages =  json.loads(queues.value())
+            if(topic == TOPIC_SEND_QUERY):
+               print('Received messages :>', messages)
+               await open_ai_instance.process_query(messages)
 
-            print('Received message: {}'.format(message.value().decode('utf-8')))
 
       except KeyboardInterrupt:
             pass

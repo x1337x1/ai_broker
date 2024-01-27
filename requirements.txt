@@ -7,3 +7,4 @@ flask_cors
 bs4
 pinecone-client
 confluent-kafka 
+pydash

@@ -7,15 +7,29 @@ from pymongo import MongoClient
 from multiprocessing import Process
 from flask import (Flask, request, jsonify)
 from flask_cors import (CORS, cross_origin)
-from controllers.kafka.consumer import kafka_consumer
-
+from controllers.integrations.kafka.consumer import kafka_consumer
+from controllers.integrations.kafka.producer import kafka_producer
+from controllers.open_ai_controller.open_ai_controller import OPENAI
+open_ai_instance = OPENAI()
 load_dotenv()
 app = Flask(__name__)
 cors = CORS(app, allow_headers=['Content-Type', 'Access-Control-Allow-Origin',
                                 'Access-Control-Allow-Headers', 'Access-Control-Allow-Methods', 'Authorization'])
 
 
-
+@app.route('/send-reply', methods=['POST'])
+def send_reply():
+    try:
+       payload = json.loads(request.data)
+       print('Webhook received:', payload)
+   
+       ## send the filtered story to node server
+       producer_instance =  kafka_producer()
+       producer_instance.send_reply(payload)
+       return jsonify(payload), 200
+    except Exception as e:
+       error_message = {'error': str(e)}
+       return jsonify(error_message), 500
 
 
 def parallelize_functions(*functions):

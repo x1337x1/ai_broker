@@ -1,2 +1,2 @@
-TOPIC_REPLY_QUERY = "atom_server_admin_reply_query"
-TOPIC_SEND_QUERY = 'msg_broker_query_user_normal'
+TOPIC_REPLY_QUERY = "node_broker"
+TOPIC_SEND_QUERY = 'python_broker'
